@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ER Diagram Showcase</title>
+  <link rel="stylesheet" href="style.css" />
+  
+</head>
+<body>
+  <div class="background-layer">
+    <div class="blue-overlay"></div>
+
+    <div class="top-space">
+      <div class="logo-placeholder">
+        <img src="images/header.png" id="logo-p">
+      </div>
+    </div>
+
+    <div class="title-area">
+      <img src="images/title.png" id="title-p">
+    </div>
+
+    <div class="blog-showcase">
+      <div class="blog-box" data-title="Inventory Management System – ER Diagram Overview" data-content="This Entity-Re
+      lationship (ER) diagram illustrates the structure of an Inventory Management System, designed to handle product
+       stock, sales, purchases, and suppliers efficiently. At the core lies the Products table, which connects with
+        Categories, Suppliers, and transactional records. PurchaseOrders and Sales tables manage respective entries
+         and are detailed through PurchaseOrderDetails and SalesDetails. The StockMovements table updates real-time
+          inventory flow. This structure ensures streamlined operations and accurate reporting across inventory activities." data-images='["images/ims er1.png", "images/ims er2.png"]'>
+        <img src="images/er ims.jpg" alt="ER Diagram 1">
+        <div class="caption">Inventory Management System ER Diagram</div>
+      </div>
+      <div class="blog-box" data-title="College Management System – ER Diagram Overview" data-content="This ER diagram,
+       captured from the live PHPMyAdmin setup, outlines the backend structure of a fully integrated College Management
+        System designed to streamline academic and administrative operations. Core entities include Student, Faculty, 
+        and Admin, with relational links to tables like Course, Department, Enrollment, and Examination. Academic performance
+         is tracked via Results and Attendance, while a mini-library system is handled through Book and Book_Issue. The system
+          ensures role-based access and accurate data management. This particular database powers the internal operations of Baijnath
+           Technical Institute (BTI), Prayagraj, Uttar Pradesh." data-images='["images/cms er1.png"]'>
+        <img src="images/er cms.jpg" alt="ER Diagram 2">
+        <div class="caption">College Management System ER Diagram</div>
+      </div>
+      <div class="blog-box" data-title="AquaBey E-Commerce – ER Diagram Overview" data-content="This ER diagram represents
+       the database structure of the AquaBey E-Commerce Website, focusing on seamless product management and user transactions.
+        The core Users table connects with modules like Address, Orders, Payment, and Shipping for a complete shopping flow.
+         Products are managed under Products, Categories, and tracked via Inventory_Log and Seller_Stock_Log. Customer
+          interactions are captured in Cart, Wishlist, and Reviews. Order_Items links orders to specific products,
+           ensuring detailed record-keeping. This relational structure supports AquaBey's smooth, reliable,
+            and efficient online shopping experience." data-images='["images/aqua er1.jpg"]'>
+        <img src="images/er aqua.jpg" alt="ER Diagram 3">
+        <div class="caption">AquaBey E-Commerce ER Diagram</div>
+      </div>
+      <div class="blog-box" data-title="Available soon..." data-content="Available soon..." data-images='["images/logo.png"]'>
+        <img src="images/logo.png" alt="ER Diagram 4">
+        <div class="caption">Available soon...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen popup -->
+  <div id="fullscreen-view">
+    <div id="close-btn">✖</div>
+    <h2 id="fs-title"></h2>
+    <div id="fs-container">
+      <div id="fs-images"></div>
+      <p id="fs-content"></p>
+    </div>
+  </div>
+
+  <script>
+    
+    const blueOverlay = document.querySelector('.blue-overlay');
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX - 100;
+      const y = e.clientY - 100;
+      blueOverlay.style.maskPosition = `${x}px ${y}px`;
+      blueOverlay.style.webkitMaskPosition = `${x}px ${y}px`;
+    });
+    document.addEventListener('mouseleave', () => {
+      blueOverlay.style.maskPosition = `-300px -300px`;
+      blueOverlay.style.webkitMaskPosition = `-300px -300px`;
+    });
+  
+    const blogBoxes = document.querySelectorAll('.blog-box');
+    let currentIndex = 0;
+    let interval;
+    let isHovered = false;
+  
+    function highlightBox(index) {
+      blogBoxes.forEach((box, i) => {
+        box.classList.toggle('active', i === index);
+      });
+    }
+  
+    function startCycle() {
+      interval = setInterval(() => {
+        if (!isHovered) {
+          currentIndex = (currentIndex + 1) % blogBoxes.length;
+          highlightBox(currentIndex);
+        }
+      }, 5000);
+    }
+  
+    function resetHover() {
+      isHovered = false;
+    }
+  
+    blogBoxes.forEach((box, index) => {
+      box.addEventListener('mouseenter', () => {
+        isHovered = true;
+        highlightBox(index);
+      });
+  
+      box.addEventListener('mouseleave', () => {
+        isHovered = false;
+      });
+  
+      box.addEventListener('click', () => {
+        clearInterval(interval);
+        isHovered = true;
+  
+        const title = box.getAttribute('data-title');
+        const content = box.getAttribute('data-content');
+        const images = JSON.parse(box.getAttribute('data-images'));
+  
+        const fsView = document.getElementById('fullscreen-view');
+        const fsTitle = document.getElementById('fs-title');
+        const fsContent = document.getElementById('fs-content');
+        const fsImages = document.getElementById('fs-images');
+        const closeBtn = document.getElementById('close-btn');
+  
+        fsTitle.textContent = title;
+        fsContent.innerHTML = '';
+        fsImages.innerHTML = '';
+        fsView.classList.add('show');
+  
+        // Show text lines one-by-one
+        const lines = content.split('. ').map(line => line.trim()).filter(line => line !== '');
+        lines.forEach((line, i) => {
+          const p = document.createElement('p');
+          p.textContent = line + (line.endsWith('.') ? '' : '.');
+          p.style.animationDelay = `${i * 200}ms`;
+          p.classList.add('line-reveal');
+          fsContent.appendChild(p);
+        });
+  
+        // Show ER images one by one
+        images.forEach((src, i) => {
+          const img = document.createElement('img');
+          img.src = src;
+          img.style.opacity = 0;
+          img.style.animation = `fadeIn 0.8s ease forwards`;
+          img.style.animationDelay = `${i * 300}ms`;
+          fsImages.appendChild(img);
+        });
+  
+        closeBtn.onclick = () => {
+          fsView.classList.remove('show');
+          resetHover(); // <--- fix
+          startCycle(); // <--- restart
+        };
+      });
+    });
+  
+    // INITIAL LOAD EFFECTS
+    window.addEventListener('DOMContentLoaded', () => {
+      // Fade in logo
+      
+  
+      // Fade in blog boxes one by one
+      
+  
+      // Fade in title image after boxes
+      
+  
+      // Start the cycling and highlight initial
+      setTimeout(() => {
+      highlightBox(currentIndex);
+      startCycle();
+    }, 3000);
+    });
+  </script>
+  
+  
+  
+</body>
+</html>
